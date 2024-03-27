@@ -21,14 +21,13 @@ const patientSchema = mongoose.Schema({
     receivingVaccineDate: [vaccinArray],
     positiveDate: Date,
     recoveryDate: Date,
-    //האם לעשות את הכתובת אובייקט רגיך
-    //try:{l:String,m:String,d:Number}
 
 })
 export const patientModel = mongoose.model("patients", patientSchema);
 export const vaccinArrayValidator=(vaccin)=>{
     const schema = Joi.object({
-        date:Joi.date().required(),
+        date:Joi.date().less('now').valid("Moderna","Pfizer","AstraZeneca"
+        ,"Johnson & Johnson","Sinovac","Sinopharm","Bharat Biotech").required(),
        manufacturer:Joi.string().required()
     })
     return schema.validate(vaccin);
@@ -50,7 +49,7 @@ export const patientValidator = (patient) => {
         phonNum: Joi.string().pattern(/^[0-9]{10}$/).min(10).max(10).required(),
      
         receivingVaccineDate: Joi.array().items(vaccinArrayValidator).max(4),
-        positiveDate: Joi.date(),
+        positiveDate: Joi.date().less('now'),
         recoveryDate: Joi.date().less('now')
     })
     return schema.validate(patient);
@@ -58,8 +57,8 @@ export const patientValidator = (patient) => {
 }
 export const addressPatientValidator = (address) => {
     const schema = Joi.object({
-        city: Joi.string().pattern(new RegExp(/^[A-Za-zא-ת\s]+$/)).min(3).max(15).required(),
-        street: Joi.string().pattern(new RegExp(/^[A-Za-zא-ת\s]+$/)).min(3).max(15).required(),
+        city: Joi.string().pattern(/^[A-Za-zא-ת\s]+$/).min(3).max(15).required(),
+        street: Joi.string().pattern(/^[A-Za-zא-ת\s]+$/).min(3).max(15).required(),
         houseNum: Joi.number().min(1).max(200).required()
     })
     return schema.validate(address);
@@ -71,7 +70,6 @@ export const patientUpdateValidator = (patientToUpdate) => {
         firstName: Joi.string().pattern(/^[A-Za-zא-ת\s]+$/),
        lastName: Joi.string().pattern(/^[A-Za-zא-ת\s]+$/),
        
-        //טעון בדיקה
         address:  Joi.object({
             city: Joi.string().pattern(/^[A-Za-zא-ת\s]+$/).min(3).max(15),
             street: Joi.string().pattern(/^[A-Za-zא-ת\s]+$/).min(3).max(15),
@@ -79,10 +77,8 @@ export const patientUpdateValidator = (patientToUpdate) => {
         }),
         telephonNum:  Joi.string().min(9).max(9).pattern(/^[0-9]{9}$/),
         phonNum: Joi.string().pattern(/^[0-9]{10}$/).min(10).max(10),
-
-        //לבדוק האם ככה זה נכון
         receivingVaccineDate:Joi.array().items(vaccinArrayValidator).max(4),
-        positiveDate: Joi.date(),
+        positiveDate: Joi.date().less('now'),
         recoveryDate: Joi.date().less('now')
     })
     return schema.validate(patientToUpdate);

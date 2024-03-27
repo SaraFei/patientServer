@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import { patientModel, patientUpdateValidator, patientValidator } from "../model/patient.js";
 
+//Allows get all the patient optinol with search string. and limit the amount of the patient
+//per page
 const getAllPatients = async (req, res) => {
 
     let { limit = 6, search, page = 1 } = req.query;
@@ -22,7 +24,7 @@ const getAllPatients = async (req, res) => {
         res.status(400).send({ type: "get patient error", message: "התרחשה שגיאה בעת הבאת הפציינטים מהשרת" })
     }
 }
-//ת לחפש לפי ת.ז אמיתי שיהיה אפשרו 
+//Allows  to search for a patient by their ID card
 const getPatientById = async (req, res) => {
     let { id } = req.params;
     try {
@@ -37,6 +39,7 @@ const getPatientById = async (req, res) => {
     }
 }
 
+//Add patient to out DB
 const addPatient = async (req, res) => {
 
     let { firstName, lastName, id, dob, address, telephonNum, phonNum, receivingVaccineDate, positiveDate, recoveryDate } = req.body;
@@ -63,6 +66,7 @@ const addPatient = async (req, res) => {
     }
 }
 
+//Up date the patient details
 const updatePatient = async (req, res) => {
     let { id } = req.params;
     try {
@@ -95,6 +99,7 @@ const updatePatient = async (req, res) => {
     }
 }
 
+//Delete a patient from our DB
 const deletePatient = async (req, res) => {
     let { id } = req.params;
     try {

@@ -1,6 +1,6 @@
-
 import { patientModel } from "../model/patient.js";
 
+//Return how many patients are not vaccited
 const howManyVaccinated = async (req, res) => {
     let cnt = 0;
     try {
