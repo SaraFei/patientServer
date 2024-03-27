@@ -10,8 +10,9 @@ const getAllPatients = async (req, res) => {
         if (search) {
             filter.name = expressionToSearch;
         }
-        const allPatient = await patientModel.find(filter).limit(parseInt(limit))
-            .skip((parseInt(page) - 1) * parseInt(limit));
+        // const allPatient = await patientModel.find(filter).limit(parseInt(limit))
+        //     .skip((parseInt(page) - 1) * parseInt(limit));
+        const allPatient = await patientModel.find(filter);
         console.log(allPatient);
         res.json(allPatient);
         //מה זו השורה הזו??????
@@ -38,11 +39,12 @@ const getPatientById = async (req, res) => {
 
 const addPatient = async (req, res) => {
 
-    let { firstName, lastName, id, address, telephonNum, phonNum, receivingVaccineDate, positiveDate, recoveryDate } = req.body;
+    let { firstName, lastName, id, dob, address, telephonNum, phonNum, receivingVaccineDate, positiveDate, recoveryDate } = req.body;
     let validate = patientValidator(req.body);
     if (validate.error) {
         return res.status(403).json({ type: "error validate", message: validate.error.details[0].message })
     }
+
     if (!positiveDate && recoveryDate) {
         return res.status(409).json({ type: "conflict", message: "לא יתכן להכניס תאריך החלמה ללא תאריך חיובי מהנגיף" })
     }
@@ -52,7 +54,7 @@ const addPatient = async (req, res) => {
         if (samePatient) {
             return res.status(409).json({ type: "same patient", message: "there is a patient with such id" })
         }
-        let newPatient = new patientModel({ firstName, lastName, id, address, telephonNum, phonNum, receivingVaccineDate, positiveDate, recoveryDate });
+        let newPatient = new patientModel({ firstName, lastName, id, dob, address, telephonNum, phonNum, receivingVaccineDate, positiveDate, recoveryDate });
         await newPatient.save();
         res.json(newPatient);
     }
@@ -65,7 +67,6 @@ const updatePatient = async (req, res) => {
     let { id } = req.params;
     try {
 
-        // //גם פה צריך את השאלה הזו???????????
         // if(!positiveDate&&recoveryDate){
         //     return res.status(409).json({type:"conflict",message:"לא יתכן להכניס תאריך החלמה ללא תאריך חיובי מהנגיף"})
         // }
@@ -74,7 +75,7 @@ const updatePatient = async (req, res) => {
         if (validate.error) {
             return res.status(403).json({ type: "error validate", message: validate.error.details[0].message })
         }
-        //_ID לא צריך לעשות פה את הבדיקה של מונגוז כי זה רק לאיי די שהם מפיצים כלומר
+
         if (!mongoose.isValidObjectId(id)) {
             return res.status(400).send({ type: "error id", message: "id is not valied" });
         }
@@ -84,7 +85,7 @@ const updatePatient = async (req, res) => {
             return res.status(404).send({ type: "patient error", message: "didnt found patient with such id" })
         }
         patientToUpdate = await patientModel.findByIdAndUpdate(id, req.body);
-        let updatePatient =await patientModel.findById(id)
+        let updatePatient = await patientModel.findById(id)
         res.json(updatePatient);
         console.log("update", updatePatient.id);
         console.log(updatePatient);
@@ -113,4 +114,5 @@ const deletePatient = async (req, res) => {
         res.status(400).send(err);
     }
 }
+
 export { getAllPatients, addPatient, updatePatient, deletePatient, getPatientById };
