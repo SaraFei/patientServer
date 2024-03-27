@@ -1,5 +1,5 @@
 import express from "express";
-import { howManyVaccinated } from "../controllers/unVaccin.js";
+import { howManyVaccinated } from "../controllers/functions.js";
 
 
 

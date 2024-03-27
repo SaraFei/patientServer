@@ -16,4 +16,16 @@ const howManyVaccinated = async (req, res) => {
         res.status(400).send({ type: "get cnt error", message: "error accur when get cnt of not vaccinated " })
     }
 }
-export{howManyVaccinated};
+
+//retuen how many patients 
+const getCountPatients=async(req,res)=>{
+    try{
+        let patients=await patientModel.find({});
+        let count=patients.length;
+        return res.json({count});
+    }
+    catch(err){
+        res.status(400).json({ type: 'get error', message: 'cannot get count all patients' });
+    }
+}
+export{howManyVaccinated,getCountPatients};

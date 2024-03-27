@@ -12,9 +12,9 @@ const getAllPatients = async (req, res) => {
         if (search) {
             filter.name = expressionToSearch;
         }
-        // const allPatient = await patientModel.find(filter).limit(parseInt(limit))
-        //     .skip((parseInt(page) - 1) * parseInt(limit));
-        const allPatient = await patientModel.find(filter);
+        const allPatient = await patientModel.find(filter).limit(parseInt(limit))
+            .skip((parseInt(page) - 1) * parseInt(limit));
+        // const allPatient = await patientModel.find(filter);
         console.log(allPatient);
         res.json(allPatient);
         //מה זו השורה הזו??????
